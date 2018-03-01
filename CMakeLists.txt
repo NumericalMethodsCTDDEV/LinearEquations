@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 project(LinearEquations)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "-pthread")
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++14 -Wall -Wextra -Wshadow -pthread")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++14 -O2 -Wall -pthread")
 
 add_library(googleTests STATIC
     gtest/gtest-all.cc
@@ -12,8 +14,6 @@ add_library(googleTests STATIC
 
 add_library(gaussMethod STATIC
     gauss.cpp)
-
-#add_library(Gauss Method)
 
 enable_testing()
 

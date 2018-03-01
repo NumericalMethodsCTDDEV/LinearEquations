@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
         for (int j = 0; j < n; j++)
             fin >> a[i][j];
 
-    dbl c;
     for (int i = 0; i < n; i++)
     {
         fin >> a[i][n];
