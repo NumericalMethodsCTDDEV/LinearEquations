@@ -12,15 +12,15 @@ add_library(googleTests STATIC
     gtest/gtest.h
     gtest/gtest_main.cc)
 
-add_library(gaussMethod STATIC
+add_library(systemSolver STATIC
     gauss.cpp)
 
 enable_testing()
 
-add_executable(gauss_testing testing.cpp)
-add_executable(gauss gauss_main.cpp)
+add_executable(testing testing.cpp)
+add_executable(solve gauss_main.cpp)
 
-target_link_libraries(gauss gaussMethod)
-target_link_libraries(gauss_testing googleTests gaussMethod)
+target_link_libraries(solve systemSolver)
+target_link_libraries(testing googleTests systemSolver)
 
 

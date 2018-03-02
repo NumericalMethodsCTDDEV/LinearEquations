@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
-#include "gauss.h"
 #include <fstream>
+#include "linearSystemsSolver.h"
 
 using namespace std;
 
@@ -9,11 +9,13 @@ using dbl = double;
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        cout << "Usage: pass file name with A and b vectors to arguments" << endl;
+        cout << "Usage: \nFirst argument - file name with A and b vectors \nSecond argument - name of method to use" << endl;
+        return 0;
     }
     string fileName(argv[1]);
+    string methodName(argv[2]);
     ifstream fin(fileName);
 
     int n;
@@ -29,11 +31,11 @@ int main(int argc, char *argv[])
         fin >> a[i][n];
     }
 
-    vector<dbl> ans;
-    int status = gauss(a, ans);
+    linearSystemsSolver solver;
+    answer_t response = solver.solve(a, methodName.c_str());
 
-    cout << "amount of solutoins: " << status << endl;
+    cout << response.status << endl;
     cout << "answer:\n";
-    for (auto i : ans)
+    for (auto i : response.solution)
         cout << setprecision(4) << i << endl;
 }

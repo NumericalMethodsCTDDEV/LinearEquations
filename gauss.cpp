@@ -1,4 +1,4 @@
-#include "gauss.h"
+#include "linearSystemsSolver.h"
 #include <vector>
 #include <limits.h>
 #include <cstdlib>
@@ -9,7 +9,7 @@ typedef double dbl;
 const int Inf = INT_MAX - 100;
 const dbl EPS = 0.00000001;
 
-int gauss(std::vector < std::vector<dbl> > a, std::vector<dbl> &ans)
+int linearSystemsSolver::gauss(std::vector < std::vector<dbl> > a, std::vector<dbl> &ans)
 {
     int amountOfEq = (int) a.size();
     int amountOfVars = (int) a[0].size() - 1;
