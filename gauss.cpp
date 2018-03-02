@@ -1,15 +1,14 @@
-#include "linearSystemsSolver.h"
 #include <vector>
 #include <limits.h>
 #include <cstdlib>
 #include <algorithm>
+#include "linearSystemsSolver.h"
 
 typedef double dbl;
 
-const int Inf = INT_MAX - 100;
 const dbl EPS = 0.00000001;
 
-int linearSystemsSolver::gauss(std::vector < std::vector<dbl> > a, std::vector<dbl> &ans)
+int gauss(std::vector < std::vector<dbl> > a, std::vector<dbl> &ans)
 {
     int amountOfEq = (int) a.size();
     int amountOfVars = (int) a[0].size() - 1;
@@ -51,6 +50,6 @@ int linearSystemsSolver::gauss(std::vector < std::vector<dbl> > a, std::vector<d
         for (int j = 0; j < amountOfVars; ++j) sum += ans[j] * a[i][j];
         if (abs(sum - a[i][amountOfVars]) > EPS) return 0;
     }
-    for (int i = 0; i < amountOfVars; ++i) if (placeHolder[i] == -1) return Inf;
+    for (int i = 0; i < amountOfVars; ++i) if (placeHolder[i] == -1) return linearSystemsSolver::Inf;
     return 1;
 }
