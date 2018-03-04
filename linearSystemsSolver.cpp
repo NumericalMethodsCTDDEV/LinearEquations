@@ -1,6 +1,8 @@
 #include "linearSystemsSolver.h"
 #include <unordered_map>
 #include <vector>
+#include <limits>
+#include <cmath>
 
 using vector_t = std::vector<double>;
 
@@ -28,7 +30,7 @@ static std::string parseStatus(int st)
     case 1:
         return "One solution";
     case linearSystemsSolver::Inf:
-        return "Iinf solutions";
+        return "Inf solutions";
     default:
         return "Something went wrong";
     }
@@ -38,9 +40,7 @@ static inline void getCofactor(const matrix_t &mat, matrix_t &cofactors, int p, 
 {
     int i = 0, j = 0;
     for (int row = 0; row < n; row++)
-    {
         for (int col = 0; col < n; col++)
-        {
             if (row != p && col != q)
             {
                 cofactors[i][j++] = mat[row][col];
@@ -50,8 +50,6 @@ static inline void getCofactor(const matrix_t &mat, matrix_t &cofactors, int p, 
                     i++;
                 }
             }
-        }
-    }
 }
 
 static double getDeterminant(const matrix_t &mat, int n)
@@ -70,9 +68,25 @@ static double getDeterminant(const matrix_t &mat, int n)
     return d;
 }
 
+static double _norm(const matrix_t &a, bool needMax = true)
+{
+    size_t n = a.size();
+    n = std::min(n, a[0].size());
+    double sMax = (needMax ? -1 : std::numeric_limits<double>::max());
+    for (size_t i = 0; i < n; ++i)
+    {
+        double s = 0;
+        for (size_t j = 0; j < n; ++j)
+            s += std::fabs(a[j][i]);
+        if (needMax) sMax = std::max(sMax, s);
+        else sMax = std::min(sMax, s);
+    }
+    return sMax;
+}
+
 namespace linearSystemsSolver
 {
-    answer_t solve(matrix_t &system, const char *methodName)
+    answer_t solve(const matrix_t &system, const char *methodName)
     {
         const std::string name(methodName);
         vector_t ans;
@@ -97,6 +111,16 @@ namespace linearSystemsSolver
     double determinant(const matrix_t &matr)
     {
         return getDeterminant(matr, static_cast<int>(matr.size()));
+    }
+
+    double cond(const matrix_t &a)
+    {
+        return _norm(a) / _norm(a, false);
+    }
+
+    double norm(const matrix_t &a)
+    {
+        return _norm(a);
     }
 
 }

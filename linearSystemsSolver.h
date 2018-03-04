@@ -18,13 +18,15 @@ namespace linearSystemsSolver
 
     const int Inf = INT_MAX - 100;
 
-    answer_t solve(matrix_t &system, const char *methodName);
+    answer_t solve(const matrix_t &system, const char *methodName);
 
     matrix_t transpose(const matrix_t &);
 
     double cond(const matrix_t &);
 
     double determinant(const matrix_t &);
+
+    double norm(const matrix_t&);
 }
 
 #endif // LINEARSYSTEMSSOLVER_H
