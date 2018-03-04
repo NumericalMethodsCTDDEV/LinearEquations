@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 #include "linearSystemsSolver.h"
 #include <limits.h>
 
@@ -20,10 +20,10 @@ TEST(testing, simple_test2)
 
 TEST(testing, simple_test3)
 {
-    matrix_t a = { {1, 1, 2}, {1, -1, 0}};
-    answer_t response = solve(a, "gauss");
+    matrix_t a = { {3, 1, 2}, {1, -2, 3}};
+    answer_t response = solve(a, "jacobi");
     EXPECT_TRUE(response.amountOfSolutions == 1);
-    std::vector<double> right_ans = {1, 1};
+    std::vector<double> right_ans = {1, -1};
     EXPECT_TRUE(response.solution == right_ans);
 }
 
