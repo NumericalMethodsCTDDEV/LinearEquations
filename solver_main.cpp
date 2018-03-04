@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
-        cout << "Usage: \nFirst argument - file name with A and b vectors \nSecond argument - name of method to use" << endl;
+        cout << "Usage: \nFirst argument - file name with A and b vectors \nSecond argument - name of method to use\n";
         return 0;
     }
     string fileName(argv[1]);
@@ -33,8 +33,13 @@ int main(int argc, char *argv[])
 
     answer_t response = solve(a, methodName.c_str());
 
+    cout << "Cond of system: " << cond(a) << endl;
     cout << response.status << endl;
-    cout << "answer:\n";
-    for (auto i : response.solution)
-        cout << setprecision(4) << i << endl;
+
+    if (response.amountOfSolutions != Inf && response.amountOfSolutions != 0)
+    {
+        cout << "answer:\n";
+        for (auto i : response.solution)
+            cout << setprecision(4) << i << endl;
+    }
 }
