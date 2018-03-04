@@ -20,11 +20,31 @@ TEST(testing, simple_test2)
 
 TEST(testing, simple_test3)
 {
+    matrix_t a = { {1, 1, 2}, {1, -1, 0}};
+    answer_t response = solve(a, "gauss");\
+    EXPECT_TRUE(response.amountOfSolutions == 1);
+    std::vector<double> right_ans = {1, 1};;
+    EXPECT_TRUE(response.solution == right_ans);
+}
+
+TEST(testing, jacobi_test)
+{
     matrix_t a = { {3, 1, 2}, {1, -2, 3}};
     answer_t response = solve(a, "jacobi");
     EXPECT_TRUE(response.amountOfSolutions == 1);
     std::vector<double> right_ans = {1, -1};
-    EXPECT_TRUE(response.solution == right_ans);
+    if (response.solution[0]<right_ans[0]-0.00000001||response.solution[0]>right_ans[0]+0.00000001)
+        EXPECT_TRUE(false);
+}
+
+TEST(testing, seidel_test)
+{
+    matrix_t a = { {3, 1, 2}, {1, -2, 3}};
+    answer_t response = solve(a, "seidel");
+    EXPECT_TRUE(response.amountOfSolutions == 1);
+    std::vector<double> right_ans = {1, -1};
+    if (response.solution[0]<right_ans[0]-0.00000001||response.solution[0]>right_ans[0]+0.00000001)
+        EXPECT_TRUE(false);
 }
 
 TEST(testing, transpose_test)
