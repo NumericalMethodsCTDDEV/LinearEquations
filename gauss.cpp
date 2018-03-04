@@ -1,7 +1,5 @@
 #include <vector>
-#include <limits.h>
-#include <cstdlib>
-#include <algorithm>
+#include <cmath>
 #include "linearSystemsSolver.h"
 
 typedef double dbl;
@@ -20,10 +18,10 @@ int gauss(std::vector < std::vector<dbl> > a, std::vector<dbl> &ans)
 
         for (int i = row; i < amountOfEq; ++i)
         {
-            if (abs(a[i][col]) > abs(a[sel][col]))
+            if (std::fabs(a[i][col]) > std::fabs(a[sel][col]))
                 sel = i;
         }
-        if (abs(a[sel][col]) < EPS) continue;
+        if (std::fabs(a[sel][col]) < EPS) continue;
         for (int i = col; i <= amountOfVars; ++i) std::swap(a[sel][i], a[row][i]);
 
         placeHolder[col] = row;
@@ -48,7 +46,7 @@ int gauss(std::vector < std::vector<dbl> > a, std::vector<dbl> &ans)
     {
         dbl sum = 0;
         for (int j = 0; j < amountOfVars; ++j) sum += ans[j] * a[i][j];
-        if (abs(sum - a[i][amountOfVars]) > EPS) return 0;
+        if (std::fabs(sum - a[i][amountOfVars]) > EPS) return 0;
     }
     for (int i = 0; i < amountOfVars; ++i) if (placeHolder[i] == -1) return linearSystemsSolver::Inf;
     return 1;
