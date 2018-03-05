@@ -79,7 +79,8 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
     double* X = new double[amountOfVars];
     double* suppX = new double[amountOfVars];
     solveJS(a,amountOfVars,amountOfEq,X,suppX,eps,ans);
-    delete[] suppX,X;
+    delete[] suppX;
+    delete[] X;
 
     return 1;
 }
