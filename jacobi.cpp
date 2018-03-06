@@ -19,7 +19,8 @@ bool checkDiagPrev(std::vector < std::vector<double> > a,int amountOfVars,int am
     return true;
 }
 
-void solveJS(std::vector < std::vector<double> > a,int amountOfVars,int amountOfEq,double* X,double* suppX, double EPS,std::vector<double> &ans){
+void solveJS(bool isConv,std::vector < std::vector<double> > a,int amountOfVars,int amountOfEq,double* X,double* suppX, double EPS,std::vector<double> &ans){
+    int counter =0;
     //изначальный вектор
     for (int j=0;j<amountOfVars;j++)
         X[j] = 0;
@@ -42,7 +43,8 @@ void solveJS(std::vector < std::vector<double> > a,int amountOfVars,int amountOf
             ans[j] = suppX[j];
         }
         std::swap(X,suppX);
-    } while (norm > EPS);
+        counter++;
+    } while (norm > EPS&&(isConv||counter<linearSystemsSolver::ITERATIONS));
 }
 
 int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
@@ -51,12 +53,11 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
     int amountOfVars = (int) a[0].size() - 1;
 
     //проверка сходимости
-    if (!checkDiagPrev(a,amountOfVars,amountOfEq))
-        return 2;
+    bool diagPrev=checkDiagPrev(a,amountOfVars,amountOfEq);
 
     //проверка корректности размеров матрицы
-    if (amountOfEq!=amountOfVars)
-        return 2;
+    /*if (amountOfEq!=amountOfVars)
+        return 2;*/
 
     //вычисление апостериорной оценки
     std::vector < std::vector<double> > b(a);
@@ -76,11 +77,14 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
     //решение системы
     double* X = new double[amountOfVars];
     double* suppX = new double[amountOfVars];
-    solveJS(a,amountOfVars,amountOfEq,X,suppX,eps,ans);
+    solveJS(diagPrev,a,amountOfVars,amountOfEq,X,suppX,eps,ans);
     delete[] suppX;
     delete[] X;
 
-    return 1;
+    if (diagPrev)
+        return 1;
+    else
+        return 2;
 }
 
 
@@ -91,11 +95,7 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
 
 
     //проверка сходимости
-    if (!checkDiagPrev(a,amountOfVars,amountOfEq))
-        return 2;
-
-    if (amountOfEq!=amountOfVars)
-        return 2
+    bool diagPrev=checkDiagPrev(a,amountOfVars,amountOfEq);
 
     //вычисление апостериорной оценки
     std::vector < std::vector<double> > b(a);//std::vector< std::vector<double>>(std::vector<double >(amountOfEq),amountOfVars);
@@ -114,8 +114,11 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
 
     //решение системы
     double* X = new double[amountOfVars];//тк сразу записывать в ответ
-    solveJS(a,amountOfVars,amountOfEq,X,X,linearSystemsSolver::EPS,ans);
+    solveJS(diagPrev,a,amountOfVars,amountOfEq,X,X,linearSystemsSolver::EPS,ans);
     delete[] X;
-    return 1;
-}*/
-
+    if(diagPrev)
+        return 1;
+    else
+        return 2;
+}
+*/
