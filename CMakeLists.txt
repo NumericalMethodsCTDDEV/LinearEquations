@@ -19,6 +19,7 @@ enable_testing()
 
 add_executable(testing testing.cpp)
 add_executable(solve solverMain.cpp)
+add_executable(generateMatrix matrixGenerationMain.cpp)
 
 target_link_libraries(solve systemSolver)
 target_link_libraries(testing googleTests systemSolver)

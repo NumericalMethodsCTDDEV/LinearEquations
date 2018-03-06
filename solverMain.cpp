@@ -6,6 +6,18 @@
 using namespace std;
 using namespace linearSystemsSolver;
 
+void solveAll(const matrix_t &a)
+{
+    std::vector<std::string> allMethods = getAllAvailableMethods();
+    for (const auto &name : allMethods)
+    {
+        answer_t ans = solve(a, name.c_str());
+        for (auto i : ans.solution)
+            cout << i << " ";
+        cout << ans.status << " by method: " << name << endl;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     if (argc != 3)
@@ -21,7 +33,7 @@ int main(int argc, char *argv[])
     fin >> n;
 
     using dbl = double;
-    vector<vector<dbl>> a(n, vector<dbl>(n + 1, 0));
+    matrix_t a(n, vector<dbl>(n + 1, 0));
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
             fin >> a[i][j];
@@ -29,6 +41,12 @@ int main(int argc, char *argv[])
     for (int i = 0; i < n; i++)
     {
         fin >> a[i][n];
+    }
+
+    if (methodName == "all")
+    {
+        solveAll(a);
+        return 0;
     }
 
     answer_t response = solve(a, methodName.c_str());
