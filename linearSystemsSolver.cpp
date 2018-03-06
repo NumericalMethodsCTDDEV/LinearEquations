@@ -10,6 +10,7 @@ int gauss(matrix_t, vector_t &);
 int jacobi(matrix_t, vector_t &);
 int seidel(matrix_t, vector_t &);
 int sequantialRelaxation(matrix_t, vector_t &);
+int descent(matrix_t, vector_t &);
 
 using solveMethod_t = int (matrix_t, vector_t &);
 
@@ -18,7 +19,8 @@ static std::unordered_map<std::string, solveMethod_t *> nameToMethod =
     {"gauss", &gauss},
     {"jacobi", &jacobi},
     {"seidel", &seidel},
-    {"sequantialRelaxation", &sequantialRelaxation}
+    {"sequantialRelaxation", &sequantialRelaxation},
+    {"descent", &descent}
 };
 
 static std::string parseStatus(int st)
