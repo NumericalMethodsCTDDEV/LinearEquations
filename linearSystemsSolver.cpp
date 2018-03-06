@@ -85,8 +85,8 @@ namespace linearSystemsSolver
         {"gauss", &gauss},
         {"jacobi", &jacobi},
         {"seidel", &seidel},
-        {"sequantialRelaxation", &sequantialRelaxation}
-//        ,{"descent", &descent} //TODO for Vlad
+        {"sequantialRelaxation", &sequantialRelaxation},
+        {"descent", &descent}
     });
 
     answer_t solve(const matrix_t &system, const char *methodName)
