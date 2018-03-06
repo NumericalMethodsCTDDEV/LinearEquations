@@ -19,8 +19,8 @@ static std::unordered_map<std::string, solveMethod_t *> nameToMethod =
     {"gauss", &gauss},
     {"jacobi", &jacobi},
     {"seidel", &seidel},
-    {"sequantialRelaxation", &sequantialRelaxation},
-    {"descent", &descent}
+    {"sequantialRelaxation", &sequantialRelaxation}
+    //,{"descent", &descent} //TODO for Vlad
 };
 
 static std::string parseStatus(int st)
@@ -123,6 +123,14 @@ namespace linearSystemsSolver
     double norm(const matrix_t &a)
     {
         return _norm(a);
+    }
+
+    std::vector<std::string> getAllAvailableMethods()
+    {
+        std::vector<std::string> ans;
+        for (const auto &it : nameToMethod)
+            ans.push_back(it.first);
+        return ans;
     }
 
 }

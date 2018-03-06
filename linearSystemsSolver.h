@@ -22,6 +22,8 @@ namespace linearSystemsSolver
 
     answer_t solve(const matrix_t &system, const char *methodName);
 
+    std::vector<std::string> getAllAvailableMethods();
+
     matrix_t transpose(const matrix_t &);
 
     double cond(const matrix_t &);
