@@ -63,7 +63,7 @@ namespace matrix_utils {
 using namespace matrix_utils;
 
 namespace {
-    const double EPS = 1e-9;
+    const double EPS = linearSystemsSolver::EPS;
     
     void symmetrization(vector<v_t> &a, v_t &b) {
         vector<v_t> a_t = transpose(a);
@@ -107,21 +107,6 @@ namespace {
         }
         return res;
     }
-    double real_error(const v_t &solution, const vector<v_t> &original_a, const v_t &original_b) {
-        v_t delta = mult_and_add(1, product(original_a, solution), -1, original_b);
-        
-        cout << vector_norm(delta) << "\n";
-        cout << vector_norm(delta) / vector_norm(solution) << "\n";
-        
-        return min(vector_norm(delta), vector_norm(delta) / vector_norm(solution));
-    }
-    int check_solution(const v_t &solution, const vector<v_t> &original_a, const v_t &original_b) {
-        if (real_error(solution, original_a, original_b) <= EPS) {
-            return 1;
-        } else {
-            return 3;
-        }
-    }
 }
 
 int descent(vector<v_t> a, v_t &ans) {
@@ -134,38 +119,40 @@ int descent(vector<v_t> a, v_t &ans) {
     vector<v_t> original_a = a;
     v_t original_b = b;
     
-//    double corrected_eps = EPS / matrix_norm(transpose(a));
+    double corrected_eps = EPS / matrix_norm(transpose(a));
 //    cout << corrected_eps << "\n";
     
     symmetrization(a, b);
     
+    int iterations = linearSystemsSolver::ITERATIONS;
+    
     v_t x(a.size(), 0);
-    for (int iteration = 0; iteration < 5; iteration++) {
+    while (true) {
         v_t delta = calc_delta(a, b, x);
         v_t dir = delta;
         
         for (double &w : dir) {
             w = -w;
         }
-        if (vector_norm(delta) < EPS) {
+        if (vector_norm(delta) < corrected_eps) {
             ans = x;
             return 1;
         }
         
-        for (size_t w = 0; w < a.size(); w++) {
+        for (size_t w = 0; w < a.size(); w++, iterations--) {
             bool error = false;
             double alpha = calc_alpha(a, dir, delta, x, error);
             
             if (error) {
+                ans = x;
                 return 3;
             }
             v_t new_x = mult_and_add(1, x, alpha, dir);
             v_t new_delta = calc_delta(a, b, new_x);
             
-            double n_2 = vector_norm(new_x);
-            double n_3 = vector_norm(new_delta);
+            double n_1 = vector_norm(mult_and_add(1, x, -1, new_x));
             
-            if (((n_3 < EPS) || (n_3 / n_2 < EPS))) {
+            if (n_1 < corrected_eps) {
                 ans = new_x;
                 return 1;
             }
@@ -175,7 +162,11 @@ int descent(vector<v_t> a, v_t &ans) {
             x     = new_x;
             delta = new_delta;
             dir   = new_dir;
+            
+            if (iterations <= 0) {
+                ans = x;
+                return 2;
+            }
         }
     }
-    return 2;
 }
