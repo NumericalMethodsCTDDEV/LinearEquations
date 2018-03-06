@@ -5,11 +5,9 @@
 
 using namespace linearSystemsSolver;
 
-static std::vector<std::string> allMethods = getAllAvailableMethods();
-
-
 TEST(testing, test_inf)
 {
+    std::vector<std::string> allMethods = {{"gauss"}};
     matrix_t a = { {0, 0, 0}, {0, 0, 0}};
     std::vector<answer_t> responses;
     for (const auto &name : allMethods)
@@ -20,6 +18,7 @@ TEST(testing, test_inf)
 
 TEST(testing, test_zero)
 {
+    std::vector<std::string> allMethods = {{"gauss"}};
     matrix_t a = { {0, 0, 1}, {0, 0, 1}};
     std::vector<answer_t> responses;
     for (const auto &name : allMethods)
@@ -30,6 +29,7 @@ TEST(testing, test_zero)
 
 TEST(testing, just_test)
 {
+    std::vector<std::string> allMethods = {{"gauss"}};
     matrix_t a = { {1, 1, 2}, {1, -1, 0}};
     std::vector<double> right_ans = {1, 1};
     std::vector<answer_t> responses;
@@ -45,6 +45,7 @@ TEST(testing, just_test)
 
 TEST(testing, just_test2)
 {
+    std::vector<std::string> allMethods = {{"gauss"}, {"seidel"}, {"sequantialRelaxation"}};
     matrix_t a = { {3, 1, 2}, {1, -2, 3}};
     std::vector<double> right_ans = {1, -1};
     std::vector<answer_t> responses;
@@ -53,8 +54,8 @@ TEST(testing, just_test2)
     for (const auto &ri : responses)
     {
         EXPECT_TRUE(ri.amountOfSolutions == 1);
-        for (auto ai : ri.solution)
-            if (ai < right_ans[0] - EPS || ai > right_ans[0] + EPS)
+        for (size_t i = 0; i < ri.solution.size(); ++i)
+            if (ri.solution[i] < right_ans[i] - EPS || ri.solution[i] > right_ans[i] + EPS)
                 EXPECT_TRUE(false);
     }
 }
@@ -96,6 +97,7 @@ namespace
 
 TEST(testing, multi_random_test)
 {
+    std::vector<std::string> allMethods = getAllAvailableMethods();
     srand(time(0));
     size_t cntGood = 0;
     for (size_t t = 0; t < RANDOM_TESTS_SIZE; ++t)

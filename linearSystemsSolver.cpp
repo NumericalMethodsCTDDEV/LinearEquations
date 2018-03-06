@@ -3,6 +3,7 @@
 #include <vector>
 #include <limits>
 #include <cmath>
+#include <iostream>
 
 using vector_t = std::vector<double>;
 
@@ -13,15 +14,6 @@ int sequantialRelaxation(matrix_t, vector_t &);
 int descent(matrix_t, vector_t &);
 
 using solveMethod_t = int (matrix_t, vector_t &);
-
-static std::unordered_map<std::string, solveMethod_t *> nameToMethod =
-{
-    {"gauss", &gauss},
-    {"jacobi", &jacobi},
-    {"seidel", &seidel},
-    {"sequantialRelaxation", &sequantialRelaxation}
-    //,{"descent", &descent} //TODO for Vlad
-};
 
 static std::string parseStatus(int st)
 {
@@ -88,6 +80,15 @@ static double _norm(const matrix_t &a, bool needMax = true)
 
 namespace linearSystemsSolver
 {
+    static std::unordered_map<std::string, solveMethod_t *> nameToMethod(
+    {
+        {"gauss", &gauss},
+        {"jacobi", &jacobi},
+        {"seidel", &seidel},
+        {"sequantialRelaxation", &sequantialRelaxation}
+//        ,{"descent", &descent} //TODO for Vlad
+    });
+
     answer_t solve(const matrix_t &system, const char *methodName)
     {
         const std::string name(methodName);
@@ -128,8 +129,8 @@ namespace linearSystemsSolver
     std::vector<std::string> getAllAvailableMethods()
     {
         std::vector<std::string> ans;
-        for (const auto &it : nameToMethod)
-            ans.push_back(it.first);
+        for (auto it = nameToMethod.begin(); it != nameToMethod.end(); ++it)
+            ans.push_back(it->first);
         return ans;
     }
 
