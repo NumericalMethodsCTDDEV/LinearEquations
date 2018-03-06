@@ -5,39 +5,58 @@
 
 using namespace linearSystemsSolver;
 
-TEST(testing, gauss_test_inf)
+static std::vector<std::string> allMethods = getAllAvailableMethods();
+
+
+TEST(testing, test_inf)
 {
     matrix_t a = { {0, 0, 0}, {0, 0, 0}};
-    answer_t response = solve(a, "gauss");
-    EXPECT_TRUE(response.amountOfSolutions == Inf);
+    std::vector<answer_t> responses;
+    for (const auto &name : allMethods)
+        responses.push_back(solve(a, name.c_str()));
+    for (const auto &ri : responses)
+        EXPECT_TRUE(ri.amountOfSolutions == Inf);
 }
 
-TEST(testing, gauss_test_zero)
+TEST(testing, test_zero)
 {
     matrix_t a = { {0, 0, 1}, {0, 0, 1}};
-    answer_t response = solve(a, "gauss");
-    EXPECT_TRUE(response.amountOfSolutions == 0);
+    std::vector<answer_t> responses;
+    for (const auto &name : allMethods)
+        responses.push_back(solve(a, name.c_str()));
+    for (const auto &ri : responses)
+        EXPECT_TRUE(ri.amountOfSolutions == 0);
 }
 
-TEST(testing, gauss_test)
+TEST(testing, just_test)
 {
     matrix_t a = { {1, 1, 2}, {1, -1, 0}};
-    answer_t response = solve(a, "gauss");
-    \
-    EXPECT_TRUE(response.amountOfSolutions == 1);
-    std::vector<double> right_ans = {1, 1};;
-    EXPECT_TRUE(response.solution == right_ans);
+    std::vector<double> right_ans = {1, 1};
+    std::vector<answer_t> responses;
+    for (const auto &name : allMethods)
+        responses.push_back(solve(a, name.c_str()));
+    for (const auto &ri : responses)
+    {
+        EXPECT_TRUE(ri.amountOfSolutions == 1);
+        EXPECT_TRUE(ri.solution == right_ans);
+    }
 }
 
 
-TEST(testing, jacobi_test)
+TEST(testing, just_test2)
 {
     matrix_t a = { {3, 1, 2}, {1, -2, 3}};
-    answer_t response = solve(a, "jacobi");
-    EXPECT_TRUE(response.amountOfSolutions == 1);
     std::vector<double> right_ans = {1, -1};
-    if (response.solution[0] < right_ans[0] - EPS || response.solution[0] > right_ans[0] + EPS)
-        EXPECT_TRUE(false);
+    std::vector<answer_t> responses;
+    for (const auto &name : allMethods)
+        responses.push_back(solve(a, name.c_str()));
+    for (const auto &ri : responses)
+    {
+        EXPECT_TRUE(ri.amountOfSolutions == 1);
+        for (auto ai : ri.solution)
+            if (ai < right_ans[0] - EPS || ai > right_ans[0] + EPS)
+                EXPECT_TRUE(false);
+    }
 }
 
 TEST(testing, seidel_test)
@@ -78,6 +97,7 @@ namespace
 TEST(testing, multi_random_test)
 {
     srand(time(0));
+    size_t cntGood = 0;
     for (size_t t = 0; t < RANDOM_TESTS_SIZE; ++t)
     {
         size_t n = rand() % 10 + 1;
@@ -91,23 +111,24 @@ TEST(testing, multi_random_test)
             a[i].push_back(double(rand() % 10 + 1));
         }
         //        printSystem(a);
-        std::vector<std::string> allMethods = getAllAvailableMethods();
         std::vector<answer_t> responses;
         for (const auto &name : allMethods)
             responses.push_back(solve(a, name.c_str()));
-        for (const auto &ri:responses)
+        for (const auto &ri : responses)
         {
-            for (const auto &rj: responses)
+            for (const auto &rj : responses)
             {
-//                EXPECT_TRUE(ri.amountOfSolutions == rj.amountOfSolutions);
+                //                EXPECT_TRUE(ri.amountOfSolutions == rj.amountOfSolutions);
                 if (ri.amountOfSolutions == 1 && rj.amountOfSolutions == 1)
                 {
+                    ++cntGood;
                     for (size_t k = 0; k < ri.solution.size(); ++k)
                         EXPECT_TRUE(std::fabs(ri.solution[k] - rj.solution[k]) < 2 * EPS);
                 }
             }
         }
     }
+    //    std::cerr << cntGood / (allMethods.size() * allMethods.size()) << std::endl;
 }
 
 TEST(testing, transpose_test)
