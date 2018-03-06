@@ -13,12 +13,12 @@ add_library(googleTests STATIC
     gtest/gtest_main.cc)
 
 add_library(systemSolver STATIC
-    gauss.cpp sequantialRelaxation.cpp jacobi.cpp linearSystemsSolver.cpp)
+    gauss.cpp sequantialRelaxation.cpp jacobi.cpp linearSystemsSolver.cpp seidel.cpp)
 
 enable_testing()
 
 add_executable(testing testing.cpp)
-add_executable(solve solver_main.cpp)
+add_executable(solve solverMain.cpp)
 
 target_link_libraries(solve systemSolver)
 target_link_libraries(testing googleTests systemSolver)

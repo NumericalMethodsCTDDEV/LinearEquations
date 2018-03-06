@@ -2,9 +2,6 @@
 #include <cmath>
 #include "linearSystemsSolver.h"
 
-//TODO flexible EPS1
-const double EPS1 = 0.00000001;
-
 bool checkDiagPrev(std::vector < std::vector<double> > a,int amountOfVars,int amountOfEq){
     //проверка сходимости по методу - условие диагонального преобладания sum|aij|<|aii|
 
@@ -57,8 +54,9 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
     if (!checkDiagPrev(a,amountOfVars,amountOfEq))
         return 2;
 
+    //проверка корректности размеров матрицы
     if (amountOfEq!=amountOfVars)
-        linearSystemsSolver::solve(a,"gauss");
+        return 2;
 
     //вычисление апостериорной оценки
     std::vector < std::vector<double> > b(a);
@@ -71,9 +69,9 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
 
     double eps=linearSystemsSolver::norm(b);
     if (eps>1/2)
-        eps=((1-eps)/eps)*EPS1;
+        eps=((1-eps)/eps)*linearSystemsSolver::EPS;
     else
-        eps=EPS1;
+        eps=linearSystemsSolver::EPS;
 
     //решение системы
     double* X = new double[amountOfVars];
@@ -85,7 +83,8 @@ int jacobi(std::vector < std::vector<double> > a, std::vector<double> &ans)
     return 1;
 }
 
-int seidel(std::vector < std::vector<double> > a, std::vector<double> &ans)
+
+/*int seidel(std::vector < std::vector<double> > a, std::vector<double> &ans)
 {
     int amountOfEq = (int) a.size();
     int amountOfVars = (int) a[0].size() - 1;
@@ -96,7 +95,7 @@ int seidel(std::vector < std::vector<double> > a, std::vector<double> &ans)
         return 2;
 
     if (amountOfEq!=amountOfVars)
-        linearSystemsSolver::solve(a,"gauss");
+        return 2
 
     //вычисление апостериорной оценки
     std::vector < std::vector<double> > b(a);//std::vector< std::vector<double>>(std::vector<double >(amountOfEq),amountOfVars);
@@ -109,14 +108,14 @@ int seidel(std::vector < std::vector<double> > a, std::vector<double> &ans)
 
     double eps=linearSystemsSolver::norm(b);
     if (eps>1/2)
-        eps=((1-eps)/eps)*EPS1;
+        eps=((1-eps)/eps)*linearSystemsSolver::EPS;
     else
-        eps=EPS1;
+        eps=linearSystemsSolver::EPS;
 
     //решение системы
     double* X = new double[amountOfVars];//тк сразу записывать в ответ
-    solveJS(a,amountOfVars,amountOfEq,X,X,EPS1,ans);
+    solveJS(a,amountOfVars,amountOfEq,X,X,linearSystemsSolver::EPS,ans);
     delete[] X;
     return 1;
-}
+}*/
 

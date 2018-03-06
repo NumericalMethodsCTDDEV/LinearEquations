@@ -3,12 +3,7 @@
 #include <cmath>
 #include "linearSystemsSolver.h"
 
-const double W = 1; // коэффициент релаксации:
-                    // 0 < W < 1 - последовательная нижняя релаксация
-                    // W = 1 - обычный метод Зайделя
-                    // 1 < W < 2 - последовательная верхняя релаксация
-
-bool sequantialRelaxationSatisfyEst(double est, const std::vector<double>& x, const std::vector<double>& xNext) {
+bool seidelSatisfyEst(double est, const std::vector<double>& x, const std::vector<double>& xNext) {
     double norm = 0;
     for (size_t i = 0; i < x.size(); ++i) {
         norm += (xNext[i] - x[i]) * (xNext[i] - x[i]);
@@ -17,7 +12,7 @@ bool sequantialRelaxationSatisfyEst(double est, const std::vector<double>& x, co
     return norm <= est;
 }
 
-int sequantialRelaxation(std::vector<std::vector<double>> a, std::vector<double> &ans) {
+int seidel(std::vector<std::vector<double>> a, std::vector<double> &ans) {
 
     // проверка корректности размера матрицы
     if (a.size() != a[0].size() - 1) {
@@ -55,21 +50,16 @@ int sequantialRelaxation(std::vector<std::vector<double>> a, std::vector<double>
 
     // находим следующее приближение, пока оно и текущее не будут удовлетворять апостериорной оценке
     bool begin = true;
-    std::vector<double> xNextEst;
-    while (begin || !sequantialRelaxationSatisfyEst(est, x, xNext)) {
+    while (begin || !seidelSatisfyEst(est, x, xNext)) {
         begin = false;
         x = xNext;
         xNext.clear();
-        xNextEst.clear();
         for (size_t i = 0; i < n; ++i) {
-            double xNextEstElement = c[i];
+            double xNext_element = c[i];
             for (size_t j = 0; j < n; ++j) {
-                xNextEstElement += b[i][j] * (i > j ? xNext[j] : x[j]);
+                xNext_element += b[i][j] * (i > j ? xNext[j] : x[j]);
             }
-            xNextEst.push_back(xNextEstElement);
-        }
-        for (size_t i = 0; i < n; ++i) {
-            xNext.push_back(W * xNextEst[i] + (1 - W) * x[i]);
+            xNext.push_back(xNext_element);
         }
     }
 

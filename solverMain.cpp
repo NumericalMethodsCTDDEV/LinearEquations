@@ -43,3 +43,5 @@ int main(int argc, char *argv[])
             cout << setprecision(4) << i << endl;
     }
 }
+
+

@@ -9,6 +9,8 @@ using matrix_t = std::vector<std::vector<double>>;
 
 namespace linearSystemsSolver
 {
+    const double EPS =  0.00000001;
+
     struct answer_t
     {
         std::string status;
