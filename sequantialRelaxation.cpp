@@ -19,10 +19,6 @@ bool sequantialRelaxationSatisfyEst(double est, const std::vector<double>& x, co
 
 int sequantialRelaxation(std::vector<std::vector<double>> a, std::vector<double> &ans) {
 
-    // проверка корректности размера матрицы
-    if (a.size() != a[0].size() - 1) {
-        return 2;
-    }
     size_t n = a.size();
 
     // находим матрицы nxn b, b1, b2 и свободный член c
@@ -40,9 +36,7 @@ int sequantialRelaxation(std::vector<std::vector<double>> a, std::vector<double>
     }
 
     // проверяем достаточное условие сходимости
-    if (linearSystemsSolver::norm(b1) + linearSystemsSolver::norm(b2) >= 1) {
-        return 2;
-    }
+    bool convergance = linearSystemsSolver::norm(b1) + linearSystemsSolver::norm(b2) < 1;
 
     // находим апостериорную оценку сходимости
     double est = std::min(linearSystemsSolver::EPS, (1 - linearSystemsSolver::norm(b)) / linearSystemsSolver::norm(b2) * linearSystemsSolver::EPS);
@@ -56,8 +50,10 @@ int sequantialRelaxation(std::vector<std::vector<double>> a, std::vector<double>
     // находим следующее приближение, пока оно и текущее не будут удовлетворять апостериорной оценке
     bool begin = true;
     std::vector<double> xNextEst;
-    while (begin || !sequantialRelaxationSatisfyEst(est, x, xNext)) {
+    size_t iterations = linearSystemsSolver::ITERATIONS;
+    while (begin || (convergance ? !sequantialRelaxationSatisfyEst(est, x, xNext) : iterations > 0)) {
         begin = false;
+        --iterations;
         x = xNext;
         xNext.clear();
         xNextEst.clear();
@@ -75,6 +71,8 @@ int sequantialRelaxation(std::vector<std::vector<double>> a, std::vector<double>
 
     // получаем ответ
     ans = xNext;
-
-    return 1;
+    if (convergance) {
+        return 1;
+    }
+    return 2;
 }

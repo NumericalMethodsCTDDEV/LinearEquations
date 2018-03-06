@@ -10,6 +10,7 @@ using matrix_t = std::vector<std::vector<double>>;
 namespace linearSystemsSolver
 {
     const double EPS =  0.00000001;
+    const size_t ITERATIONS = 1000;
 
     struct answer_t
     {

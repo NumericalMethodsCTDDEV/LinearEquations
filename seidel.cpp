@@ -14,10 +14,6 @@ bool seidelSatisfyEst(double est, const std::vector<double>& x, const std::vecto
 
 int seidel(std::vector<std::vector<double>> a, std::vector<double> &ans) {
 
-    // проверка корректности размера матрицы
-    if (a.size() != a[0].size() - 1) {
-        return 2;
-    }
     size_t n = a.size();
 
     // находим матрицы nxn b, b1, b2 и свободный член c
@@ -35,9 +31,7 @@ int seidel(std::vector<std::vector<double>> a, std::vector<double> &ans) {
     }
 
     // проверяем достаточное условие сходимости
-    if (linearSystemsSolver::norm(b1) + linearSystemsSolver::norm(b2) >= 1) {
-        return 2;
-    }
+    bool convergance = linearSystemsSolver::norm(b1) + linearSystemsSolver::norm(b2) < 1;
 
     // находим апостериорную оценку сходимости
     double est = std::min(linearSystemsSolver::EPS, (1 - linearSystemsSolver::norm(b)) / linearSystemsSolver::norm(b2) * linearSystemsSolver::EPS);
@@ -50,8 +44,10 @@ int seidel(std::vector<std::vector<double>> a, std::vector<double> &ans) {
 
     // находим следующее приближение, пока оно и текущее не будут удовлетворять апостериорной оценке
     bool begin = true;
-    while (begin || !seidelSatisfyEst(est, x, xNext)) {
+    size_t iterations = linearSystemsSolver::ITERATIONS;
+    while (begin || (convergance ? !seidelSatisfyEst(est, x, xNext) : iterations > 0)) {
         begin = false;
+        --iterations;
         x = xNext;
         xNext.clear();
         for (size_t i = 0; i < n; ++i) {
@@ -66,5 +62,8 @@ int seidel(std::vector<std::vector<double>> a, std::vector<double> &ans) {
     // получаем ответ
     ans = xNext;
 
-    return 1;
+    if (convergance) {
+        return 1;
+    }
+    return 2;
 }

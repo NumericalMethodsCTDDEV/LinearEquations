@@ -25,6 +25,10 @@ static std::string parseStatus(int st)
         return "One solution";
     case linearSystemsSolver::Inf:
         return "Inf solutions";
+    case 2:
+        return "No convergence";
+    case 3:
+        return "Det = 0";
     default:
         return "Something went wrong";
     }
