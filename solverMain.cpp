@@ -8,12 +8,13 @@ using namespace linearSystemsSolver;
 
 void solveAll(const matrix_t &a)
 {
+
     std::vector<std::string> allMethods = getAllAvailableMethods();
     for (const auto &name : allMethods)
     {
         answer_t ans = solve(a, name.c_str());
         for (auto i : ans.solution)
-            cout << i << " ";
+            cout << std::setprecision(7) << i << " ";
         cout << ans.status << " by method: " << name << endl;
     }
 }
